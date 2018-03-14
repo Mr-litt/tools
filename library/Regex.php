@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Created by IntelliJ IDEA.
- * User: lihaitao
- * Date: 17-5-9
- * Time: 下午3:30
+ * 正则相关
+ * Class Regex
  */
 class Regex
 {
@@ -42,4 +40,21 @@ class Regex
             $rule       =   $validate[strtolower($rule)];
         return preg_match($rule,$value)===1;
     }
+
+    /**
+     * 检查手机号码
+     * @param $mobile
+     * @param int $district 区号
+     * @return bool|int
+     */
+    public static function check_mobile($mobile, $district = 86)
+    {
+        if ($district == 86) { // 中国号码验证11位
+            return self::validate($mobile,'mobile');
+        } else {
+            return preg_match('/^[\d]{6,}$/', $mobile); //国际短信，大于6位纯数字
+        }
+    }
+
+
 }

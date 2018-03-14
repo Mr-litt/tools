@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Created by IntelliJ IDEA.
- * User: lihaitao
- * Date: 17-5-9
- * Time: 下午2:20
+ * 安全相关
+ * Class Safety
  */
 class Safety
 {
@@ -81,5 +79,61 @@ class Safety
             }
         }
         return base64_decode($str);
+    }
+
+    /**
+     * 密码加密方式
+     * @param string $pwd 密码
+     * @param string $salt 附加字符
+     * @return string
+     */
+    public static function md5Pwd($pwd, $salt) {
+        return md5(md5($pwd).$salt);
+    }
+
+    /**
+     * 获取输入参数 支持过滤和默认值
+     * @param string $name 变量的名称
+     * @param mixed $default 不存在的时候默认值
+     * @param mixed $filter 参数过滤方法
+     * @return mixed
+     */
+    public static function I($name, $default='', $filter = null) {
+
+        if($name) { // 取值操作
+            $filters    =   isset($filter) ? $filter : 'htmlspecialchars';
+            if($filters) {
+                $filters    =   explode(',',$filters);
+                foreach($filters as $filter){
+                    if(function_exists($filter)) {
+                        $name   =   is_array($name) ? self::array_map_recursive($filter,$name) : $filter($name); // 参数过滤
+                    }else{
+                        $name   =   filter_var($name,is_int($filter) ? $filter : filter_id($filter));
+                        if(false === $name) {
+                            return   isset($default) ? $default : '';
+                        }
+                    }
+                }
+            }
+        }else{ // 变量默认值
+            $name       =    isset($default)?$default:'';
+        }
+        return $name;
+    }
+
+    /**
+     * array_map_recursive模拟
+     * @param $filter
+     * @param $data
+     * @return array
+     */
+    public static function array_map_recursive($filter, $data) {
+        $result = array();
+        foreach ($data as $key => $val) {
+            $result[$key] = is_array($val)
+                ? self::array_map_recursive($filter, $val)
+                : call_user_func($filter, $val);
+        }
+        return $result;
     }
 }

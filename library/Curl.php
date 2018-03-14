@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Created by IntelliJ IDEA.
- * User: lihaitao
- * Date: 17-5-9
- * Time: 上午11:38
+ * CURL请求类
+ * Class Curl
  */
 class Curl
 {
